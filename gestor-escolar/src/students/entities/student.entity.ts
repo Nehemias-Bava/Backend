@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Course } from '../../courses/entities/course.entity';
 
 @Entity()
 export class Student {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
@@ -14,6 +15,6 @@ export class Student {
     @Column()
     age: number;
 
-    @Column()
-    grade: string;
+    @ManyToOne(() => Course, course => course.students)
+    course: Course;
 }

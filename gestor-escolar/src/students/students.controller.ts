@@ -30,9 +30,4 @@ export class StudentsController {
     deleteStudent(@Param('id') id: string) {
         this.studentsService.deleteStudent(id);
     }
-
-    @Get('sort/:order')
-    getStudentsSortedByGrade(@Param('order') order: 'asc' | 'desc'): Student[] {
-        return this.studentsService.getStudentsSortedByGrade(order);
-    }
 }

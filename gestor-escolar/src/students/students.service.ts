@@ -1,85 +1,48 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { FileStorageService } from '../file-storage.service';
 import { Student } from './entities/student.entity';
-import * as fs from 'fs';
-import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-
-const STUDENTS_FILE = path.resolve(__dirname, '..', '..', 'data', 'students.json');
 
 @Injectable()
 export class StudentsService {
-    private students: Student[] = [];
+    constructor(private readonly fileStorageService: FileStorageService) {}
 
-    constructor() {
-        this.loadStudents();
+    async getAllStudents(): Promise<Student[]> {
+        return await this.fileStorageService.readStudentsFile();
     }
 
-    private loadStudents() {
-        if (fs.existsSync(STUDENTS_FILE)) {
-            const data = fs.readFileSync(STUDENTS_FILE, 'utf-8');
-            this.students = JSON.parse(data);
-        } else {
-            console.log('File not found, initializing with empty array');
-            this.students = [];
-            this.saveStudents();
-        }
-    }
-
-    private saveStudents() {
-        try {
-            fs.writeFileSync(STUDENTS_FILE, JSON.stringify(this.students, null, 2));
-        } catch (error) {
-            console.error('Error saving students:', error);
-        }
-    }
-
-    getAllStudents(): Student[] {
-        return this.students;
-    }
-
-    getStudentById(id: string): Student {
-        const student = this.students.find(student => student.id === id);
+    async getStudentById(id: string): Promise<Student> {
+        const students = await this.getAllStudents();
+        const student = students.find(s => s.id === id);
         if (!student) {
-            throw new NotFoundException(`Student with ID ${id} not found`);
+            throw new NotFoundException('Estudiante no encontrado');
         }
         return student;
     }
 
-    createStudent(student: Student) {
-        student.id = uuidv4(); // Genera un ID único
-        this.students.push(student);
-        this.saveStudents();
+    async createStudent(student: Student): Promise<void> {
+        const students = await this.getAllStudents();
+        student.id = uuidv4();
+        students.push(student);
+        await this.fileStorageService.writeStudentsFile(students);
     }
 
-    updateStudent(id: string, updatedStudent: Student) {
-        const index = this.students.findIndex(student => student.id === id);
+    async updateStudent(id: string, updatedStudent: Student): Promise<void> {
+        const students = await this.getAllStudents();
+        const index = students.findIndex(s => s.id === id);
         if (index === -1) {
-            throw new NotFoundException(`Student with ID ${id} not found`);
+            throw new NotFoundException('Estudiante no encontrado');
         }
-        updatedStudent.id = id; // Mantén el mismo ID
-        this.students[index] = updatedStudent;
-        this.saveStudents();
+        students[index] = { ...students[index], ...updatedStudent };
+        await this.fileStorageService.writeStudentsFile(students);
     }
 
-    deleteStudent(id: string) {
-        const index = this.students.findIndex(student => student.id === id);
-        if (index === -1) {
-            throw new NotFoundException(`Student with ID ${id} not found`);
+    async deleteStudent(id: string): Promise<void> {
+        const students = await this.getAllStudents();
+        const updatedStudents = students.filter(s => s.id !== id);
+        if (students.length === updatedStudents.length) {
+            throw new NotFoundException('Estudiante no encontrado');
         }
-        this.students.splice(index, 1);
-        this.saveStudents();
-    }
-
-    getStudentsSortedByGrade(order: 'asc' | 'desc' = 'asc'): Student[] {
-        const gradeOrder = ['primero', 'segundo', 'tercero', 'cuarto', 'quinto', 'sexto'];
-        return this.students.sort((a, b) => {
-            const gradeA = gradeOrder.indexOf(a.grade.toLowerCase());
-            const gradeB = gradeOrder.indexOf(b.grade.toLowerCase());
-            if (order === 'asc') {
-                return gradeA - gradeB;
-            } else {
-                return gradeB - gradeA;
-            }
-        });
+        await this.fileStorageService.writeStudentsFile(updatedStudents);
     }
 }
