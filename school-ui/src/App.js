@@ -1,116 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Button, Table } from 'react-bootstrap';
-import StudentForm from './components/StudentForm';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import CoursesPage from './components/CoursesPage';
+import './App.css';
 
-const StudentList = ({ students, onDelete, onEdit }) => (
-  <Table striped bordered hover className="mt-3">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Edad</th>
-        <th>Grado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {students.map((student) => (
-        <tr key={student.id}>
-          <td>{student.id}</td>
-          <td>{student.firstName}</td>
-          <td>{student.lastName}</td>
-          <td>{student.age}</td>
-          <td>{student.grade}</td>
-          <td>
-            <Button variant="warning" onClick={() => onEdit(student)}>
-              Modificar
-            </Button>{' '}
-            <Button
-              variant="danger"
-              onClick={() => onDelete(student.id)}
-            >
-              Eliminar
-            </Button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-);
-
-const App = () => {
-  const [students, setStudents] = useState([]);
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [editingStudent, setEditingStudent] = useState(null);
-
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  const fetchStudents = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/students');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const students = await response.json();
-      setStudents(students);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-  };
-
-  const handleAddStudent = () => {
-    fetchStudents();
-  };
-
-  const handleDeleteStudent = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3000/students/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        fetchStudents();
-      } else {
-        console.error('Error deleting student:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error deleting student:', error);
-    }
-  };
-
-  const handleSort = async (order) => {
-    try {
-      const response = await fetch(`http://localhost:3000/students/sort/${order}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const sortedStudents = await response.json();
-      setStudents(sortedStudents);
-      setSortOrder(order);
-    } catch (error) {
-      console.error('Error sorting students:', error);
-    }
-  };
-
-  const handleEditStudent = (student) => {
-    setEditingStudent(student);
-  };
-
-  return (
-    <Container>
-      <h1 className="mt-4">Gestión de Estudiantes</h1>
-      <StudentForm onSubmit={handleAddStudent} editingStudent={editingStudent} setEditingStudent={setEditingStudent} />
-      <Button
-        className="mt-3"
-        onClick={() => handleSort(sortOrder === 'asc' ? 'desc' : 'asc')}
-      >
-        Ordenar por Grado ({sortOrder === 'asc' ? 'Descendente' : 'Ascendente'})
-      </Button>
-      <StudentList students={students} onDelete={handleDeleteStudent} onEdit={handleEditStudent} />
-    </Container>
-  );
-};
+function App() {
+    return (
+        <Router>
+            <div className="App">
+                <Navbar />
+                <div className="content">
+                    <Routes>
+                        <Route path="/cursos" element={<CoursesPage />} />
+                        <Route path="/" element={
+                            <div>
+                                <p>
+                                    ¡Bienvenidos a nuestra escuela privada! En nuestra institución, nos dedicamos a proporcionar una educación de excelencia en un entorno acogedor y seguro. Ubicados en un campus moderno y equipado, ofrecemos instalaciones de vanguardia que incluyen laboratorios científicos, biblioteca completa, y espacios deportivos para fomentar el desarrollo integral de nuestros estudiantes. Nuestro compromiso con la educación de calidad se refleja en nuestro equipo docente altamente cualificado y en programas académicos innovadores que preparan a los estudiantes para enfrentar los desafíos del futuro. ¡Únete a nuestra comunidad educativa y descubre las oportunidades que tenemos para tu hijo!
+                                </p>
+                            </div>
+                        } />
+                    </Routes>
+                </div>
+            </div>
+        </Router>
+    );
+}
 
 export default App;

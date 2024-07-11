@@ -1,48 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Table, Button } from 'react-bootstrap';
 
-const StudentList = () => {
-    const [students, setStudents] = useState([]);
-
-    useEffect(() => {
-        fetchStudents(); // Llamar a la función fetchStudents al montar el componente
-    }, []);
-
-    // Función para obtener todos los estudiantes desde la API
-    const fetchStudents = async () => {
-        try {
-        const response = await fetch('http://localhost:3000/students'); // Realizar solicitud GET a la API
-        const data = await response.json(); // Convertir la respuesta a JSON
-        setStudents(data); // Actualizar el estado con los estudiantes obtenidos
-        } catch (error) {
-        console.error('Error fetching students:', error); // Manejar errores
-        }
-    };
-
-    // Función para manejar la eliminación de un estudiante
-    const handleDelete = async (id) => {
-        try {
-        await fetch(`http://localhost:3000/students/${id}`, {
-            method: 'DELETE' // Realizar solicitud DELETE a la API para eliminar el estudiante
-        });
-        fetchStudents(); // Actualizar la lista de estudiantes después de la eliminación
-        } catch (error) {
-        console.error('Error deleting student:', error); // Manejar errores
-        }
-    };
-
-    return (
-        <div>
-        <h2>Lista de Estudiantes</h2>
-        <ul>
-            {students.map((student) => (
-            <li key={student.id}>
-                {student.firstName} {student.lastName} - Grado: {student.grade}
-                <button onClick={() => handleDelete(student.id)}>Eliminar</button>
-            </li>
-            ))}
-        </ul>
-        </div>
-    );
-};
+const StudentList = ({ students, onDelete, onEdit }) => (
+    <Table striped bordered hover className="table table-dark mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+            <th>Curso</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {students.map((student) => (
+            <tr key={student.id}>
+            <td>{student.id}</td>
+            <td>{student.firstName}</td>
+            <td>{student.lastName}</td>
+            <td>{student.age}</td>
+            <td>{student.grade}</td>
+            <td>
+                <Button variant="warning" className="btn btn-light" onClick={() => onEdit(student)}>
+                Modificar
+                </Button>{' '}
+                <Button variant="danger" onClick={() => onDelete(student.id)}>
+                Eliminar
+                </Button>
+            </td>
+            </tr>
+        ))}
+        </tbody>
+    </Table>
+);
 
 export default StudentList;
