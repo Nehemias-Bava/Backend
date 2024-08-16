@@ -1,23 +1,11 @@
 [
   {
-    "firstName": "Diego Armando",
-    "lastName": "Maradona",
-    "age": 16,
-    "grade": "Quinto",
-    "id": "abea7c83-78e3-4b3d-9d28-19212a421381"
-  },
-  {
-    "firstName": "Wanda",
-    "lastName": "Nara",
-    "age": 15,
-    "grade": "Tercero",
-    "id": "5fc40a3d-9eb3-41b7-af06-027a26ed48bc"
-  },
-  {
-    "firstName": "Luciana",
-    "lastName": "Aymar",
-    "age": 13,
-    "grade": "Segundo",
-    "id": "54fa1190-f99e-4a02-9c35-f3102cdce913"
+    "id": 1,
+    "nombre": "Nehemias",
+    "apellido": "Bava",
+    "edad": 15,
+    "dni": 38961361,
+    "curso": "Tercero",
+    "celularResponsable": 2983343536
   }
 ]

@@ -1,33 +1,35 @@
-import { Controller, Get, Post, Param, Body, Put, Delete } from '@nestjs/common';
-import { CoursesService } from './courses.service';
-import { Course } from './course.model';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { CourseService } from './courses.service';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
+import { Course } from './entities/course.entity';
 
 @Controller('courses')
-export class CoursesController {
-    constructor(private readonly coursesService: CoursesService) {}
+export class CourseController {
+    constructor(private readonly courseService: CourseService) {}
 
     @Get()
-    getAllCourses(): Course[] {
-        return this.coursesService.getAllCourses();
+    findAll(): Course[] {
+        return this.courseService.findAll();
     }
 
     @Get(':id')
-    getCourseById(@Param('id') id: string): Course {
-        return this.coursesService.getCourseById(+id);
+    findOne(@Param('id') id: string): Course {
+        return this.courseService.findOne(Number(id));
     }
 
     @Post()
-    addCourse(@Body() course: Course) {
-        this.coursesService.addCourse(course);
+    create(@Body() createCourseDto: CreateCourseDto): Course {
+        return this.courseService.create(createCourseDto);
     }
 
     @Put(':id')
-    updateCourse(@Param('id') id: string, @Body() updatedCourse: Course) {
-        this.coursesService.updateCourse(+id, updatedCourse);
+    update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto): Course {
+        return this.courseService.update(Number(id), updateCourseDto);
     }
 
     @Delete(':id')
-    deleteCourse(@Param('id') id: string) {
-        this.coursesService.deleteCourse(+id);
+    remove(@Param('id') id: string): void {
+        this.courseService.remove(Number(id));
     }
 }

@@ -1,38 +1,68 @@
-import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
-const StudentList = ({ students, onDelete, onEdit }) => (
-    <Table striped bordered hover className="table table-dark mt-3">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Edad</th>
-            <th>Curso</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        {students.map((student) => (
-            <tr key={student.id}>
-            <td>{student.id}</td>
-            <td>{student.firstName}</td>
-            <td>{student.lastName}</td>
-            <td>{student.age}</td>
-            <td>{student.grade}</td>
-            <td>
-                <Button variant="warning" className="btn btn-light" onClick={() => onEdit(student)}>
-                Modificar
-                </Button>{' '}
-                <Button variant="danger" onClick={() => onDelete(student.id)}>
-                Eliminar
-                </Button>
-            </td>
-            </tr>
+const StudentsList = () => {
+    const [students, setStudents] = useState([]);
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const curso = searchParams.get('curso');
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+        try {
+            // Simulación de carga de datos desde un archivo JSON
+            const response = await fetch('/Backend/gestor-escolar/data/students.json'); // Reemplazar con la ruta correcta
+            if (!response.ok) {
+            throw new Error('Error al cargar los estudiantes');
+            }
+            const data = await response.json();
+
+            // Filtrar estudiantes según el curso seleccionado
+            if (curso) {
+            const filteredStudents = data.filter(student => student.curso.toLowerCase() === curso.toLowerCase());
+            setStudents(filteredStudents);
+            } else {
+            setStudents(data);
+            }
+        } catch (error) {
+            console.error('Error al cargar los estudiantes:', error.message);
+        }
+        };
+
+        fetchStudents();
+    }, [curso]);
+
+    return (
+        <StudentsContainer>
+        {students.map(student => (
+            <StudentLink key={student.id} to={`/estudiantes/${student.id}`}>
+            {student.nombre} {student.apellido}
+            </StudentLink>
         ))}
-        </tbody>
-    </Table>
-);
+        </StudentsContainer>
+    );
+};
 
-export default StudentList;
+export default StudentsList;
+
+const StudentsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    `;
+
+    const StudentLink = styled(Link)`
+    padding: 10px;
+    background: #6F9059;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.3s;
+
+    &:hover {
+        background: #5f7d4a;
+    }
+`;

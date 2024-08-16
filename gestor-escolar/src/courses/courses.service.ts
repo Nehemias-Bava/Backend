@@ -1,47 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FileStorageService } from '../file-storage.service';
+import { Injectable } from '@nestjs/common';
 import { Course } from './entities/course.entity';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
-export class CoursesService {
-    constructor(private readonly fileStorageService: FileStorageService) {}
+export class CourseService {
+    private courses: Course[] = [];
 
-    async getAllCourses(): Promise<Course[]> {
-        return await this.fileStorageService.readCoursesFile();
+    findAll(): Course[] {
+        return this.courses;
     }
 
-    async getCourseById(id: number): Promise<Course> {
-        const courses = await this.getAllCourses();
-        const course = courses.find(c => c.id === id);
-        if (!course) {
-            throw new NotFoundException('Curso no encontrado');
-        }
+    findOne(id: number): Course {
+        return this.courses.find(course => course.id === id);
+    }
+
+    create(createCourseDto: CreateCourseDto): Course {
+        const newCourse = { id: Date.now(), ...createCourseDto, students: [] };
+        this.courses.push(newCourse);
+        return newCourse;
+    }
+
+    update(id: number, updateCourseDto: UpdateCourseDto): Course {
+        const course = this.findOne(id);
+        Object.assign(course, updateCourseDto);
         return course;
     }
 
-    async addCourse(course: Course): Promise<void> {
-        const courses = await this.getAllCourses();
-        course.id = courses.length > 0 ? courses[courses.length - 1].id + 1 : 1;
-        courses.push(course);
-        await this.fileStorageService.writeCoursesFile(courses);
-    }
-
-    async updateCourse(id: number, updatedCourse: Course): Promise<void> {
-        const courses = await this.getAllCourses();
-        const index = courses.findIndex(c => c.id === id);
-        if (index === -1) {
-            throw new NotFoundException('Curso no encontrado');
-        }
-        courses[index] = { ...courses[index], ...updatedCourse };
-        await this.fileStorageService.writeCoursesFile(courses);
-    }
-
-    async deleteCourse(id: number): Promise<void> {
-        const courses = await this.getAllCourses();
-        const updatedCourses = courses.filter(c => c.id !== id);
-        if (courses.length === updatedCourses.length) {
-            throw new NotFoundException('Curso no encontrado');
-        }
-        await this.fileStorageService.writeCoursesFile(updatedCourses);
+    remove(id: number): void {
+        this.courses = this.courses.filter(course => course.id !== id);
     }
 }

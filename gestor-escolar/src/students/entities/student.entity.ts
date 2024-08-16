@@ -1,20 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Course } from '../../courses/entities/course.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Student {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
     @Column()
-    firstName: string;
+    nombre: string;
 
     @Column()
-    lastName: string;
+    apellido: string;
 
     @Column()
-    age: number;
+    edad: number;
 
-    @ManyToOne(() => Course, course => course.students)
-    course: Course;
+    @Column()
+    dni: number;
+
+    @Column()
+    curso: string;
+
+    @Column()
+    celularResponsable: number;
 }

@@ -3,27 +3,17 @@ body {
   padding: 0;
   width: 100%;
   background: url('../public/assets/img/city-building-along-road-daytime.jpg') no-repeat center center fixed;
-  background-size: cover; /* Cambiar a 'contain' para que la imagen se ajuste completamente */
+  background-size: cover;
   min-height: 100vh;
   font-family: Arial, sans-serif;
-  overflow-x: hidden; /* Asegúrate de que no haya desplazamiento horizontal */
+  overflow-x: hidden;
+  overflow-y: hidden;  
 }
 
 .App {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh; /* Ajusta la altura mínima al 100% del viewport */
-  padding-bottom: 10vh; /* Espacio desde la parte inferior */
-}
-
-.content {
-  background-color: #000000b0;
-  padding: 20px;
-  text-align: center;
-  color: white;
-  max-width: 80%;
-  margin-top: auto;
-  border-radius: 10px;
+  justify-content: flex-start;
+  min-height: 100vh; 
 }

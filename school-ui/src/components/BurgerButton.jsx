@@ -17,6 +17,7 @@ export default BurgerButton;
 
 const Burger = styled.div`
     cursor: pointer;
+    margin-right: 20px; 
 
     .hamburger {
         width: 30px;
@@ -26,7 +27,7 @@ const Burger = styled.div`
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .line {
         width: 100%;
         height: 3px;

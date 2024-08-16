@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "nombre": "Primero",
+        "estudiantes": []
+    },
+    {
+        "nombre": "Segundo",
+        "estudiantes": []
+    },
+    {
+        "nombre": "Tercero",
+        "estudiantes": []
+    },
+    {
+        "nombre": "Cuarto",
+        "estudiantes": []
+    },
+    {
+        "nombre": "Quinto",
+        "estudiantes": []
+    },
+    {
+        "nombre": "Sexto",
+        "estudiantes": []
+    }
+]

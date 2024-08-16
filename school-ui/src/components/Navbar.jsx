@@ -13,11 +13,12 @@ const Navbar = () => {
     return (
         <>
             <NavContainer>
-                <h1>Escuela San Nemel: <span className='primary-text'>Gestión Escolar</span></h1>
+                <h1>Escuela Privada Nemel: <span className='primary-text'>Gestión Escolar</span></h1>
                 <NavLinks isOpen={isOpen}>
+                    <Link to="/">Inicio</Link>
                     <Link to="/cursos">Cursos</Link>
                     <a href="#asignaturas">Asignaturas</a>
-                    <a href="#instalaciones">Instalaciones</a>
+                    {/* <Link to="/instalations">Instalaciones</Link> */}
                     <a href="#contactos">Contactos</a>
                 </NavLinks>
                 <BurgerButton isOpen={isOpen} handleToggle={handleToggle} />
@@ -35,6 +36,9 @@ const NavContainer = styled.nav`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    z-index: 10;
 
     h1 {
         padding-left: 10px;
@@ -54,27 +58,41 @@ const NavContainer = styled.nav`
 
 const NavLinks = styled.div`
     display: flex;
-    gap: 1rem;
-    padding-right: 10px;
+    gap: 1.5rem;
+    padding-right: 15px;
 
     a {
         color: white;
         text-decoration: none;
         transition: color 0.3s;
         &:hover {
-            color: #ddd;
+            color: #dc8343;
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
         flex-direction: column;
         display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
         position: absolute;
-        top: 41px;
+        top: 79px;  
         left: 0;
         width: 100%;
         background-color: #000000e6;
         padding: 1rem;
         border-radius: 0 0 80% 0;
     }
+
+
+    @media (min-width: 600px) and (max-width: 768px) {
+        flex-direction: column;
+        display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+        position: absolute;
+        top: 49px;  
+        left: 0;
+        width: 100%;
+        background-color: #000000e6;
+        padding: 1rem;
+        border-radius: 0 0 80% 0;
+    }
+
 `;
